@@ -1,5 +1,5 @@
 protoc \
-	--proto_path=../kptl-protos \
+	--proto_path=/home/cdl/GolandProjects/kptl-protos \
 	--go_out=./pkg \
 	--go-grpc_out=./pkg \
-	../kptl-protos/*/*.proto
+	/home/cdl/GolandProjects/kptl-protos/*/*.proto

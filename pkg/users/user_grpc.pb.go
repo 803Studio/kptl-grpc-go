@@ -19,7 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Auth_Login_FullMethodName = "/users.Auth/Login"
+	Auth_Login_FullMethodName = "/users.Auth/login"
 )
 
 // AuthClient is the client API for Auth service.
@@ -100,7 +100,7 @@ var Auth_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*AuthServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Login",
+			MethodName: "login",
 			Handler:    _Auth_Login_Handler,
 		},
 	},

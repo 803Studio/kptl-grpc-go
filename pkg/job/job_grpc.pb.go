@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             v4.24.2
-// source: job/Job.proto
+// source: job/job.proto
 
 package job
 
@@ -19,16 +19,15 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Job_FindAllJobs_FullMethodName       = "/job.Job/FindAllJobs"
-	Job_FindJobByName_FullMethodName     = "/job.Job/FindJobByName"
-	Job_FindJobById_FullMethodName       = "/job.Job/FindJobById"
-	Job_FindJobs_FullMethodName          = "/job.Job/FindJobs"
-	Job_SaveJobs_FullMethodName          = "/job.Job/SaveJobs"
-	Job_UpdateJobs_FullMethodName        = "/job.Job/UpdateJobs"
-	Job_RegisteredCompany_FullMethodName = "/job.Job/RegisteredCompany"
-	Job_UpdateCompany_FullMethodName     = "/job.Job/UpdateCompany"
-	Job_BoundCompany_FullMethodName      = "/job.Job/BoundCompany"
-	Job_VerifyCompany_FullMethodName     = "/job.Job/VerifyCompany"
+	Job_FindAllJobs_FullMethodName        = "/job.Job/findAllJobs"
+	Job_FindJobByName_FullMethodName      = "/job.Job/findJobByName"
+	Job_FindJobById_FullMethodName        = "/job.Job/findJobById"
+	Job_FindJobsByIndustry_FullMethodName = "/job.Job/findJobsByIndustry"
+	Job_FindJobs_FullMethodName           = "/job.Job/findJobs"
+	Job_FindJobsByType_FullMethodName     = "/job.Job/findJobsByType"
+	Job_SaveJobs_FullMethodName           = "/job.Job/saveJobs"
+	Job_FindJobsSimplify_FullMethodName   = "/job.Job/findJobsSimplify"
+	Job_UpdateJobs_FullMethodName         = "/job.Job/updateJobs"
 )
 
 // JobClient is the client API for Job service.
@@ -38,13 +37,12 @@ type JobClient interface {
 	FindAllJobs(ctx context.Context, in *FindAllJobRequest, opts ...grpc.CallOption) (*FindJobResponse, error)
 	FindJobByName(ctx context.Context, in *FindJobByNameRequest, opts ...grpc.CallOption) (*FindJobResponse, error)
 	FindJobById(ctx context.Context, in *FindJobByIdRequest, opts ...grpc.CallOption) (*FindJobResponse, error)
+	FindJobsByIndustry(ctx context.Context, in *FindJobsByIndustryReq, opts ...grpc.CallOption) (*FindJobResponse, error)
 	FindJobs(ctx context.Context, in *FindJobRequest, opts ...grpc.CallOption) (*FindJobResponse, error)
+	FindJobsByType(ctx context.Context, in *FindJobsByTypeReq, opts ...grpc.CallOption) (*FindSimplifyJobResponse, error)
 	SaveJobs(ctx context.Context, in *JobMessage, opts ...grpc.CallOption) (*SaveJobResponse, error)
+	FindJobsSimplify(ctx context.Context, in *FindAllJobRequest, opts ...grpc.CallOption) (*FindSimplifyJobResponse, error)
 	UpdateJobs(ctx context.Context, in *JobMessage, opts ...grpc.CallOption) (*SaveJobResponse, error)
-	RegisteredCompany(ctx context.Context, in *RegisteredCompanyReq, opts ...grpc.CallOption) (*CommonResponse, error)
-	UpdateCompany(ctx context.Context, in *RegisteredCompanyReq, opts ...grpc.CallOption) (*CommonResponse, error)
-	BoundCompany(ctx context.Context, in *BoundCompanyReq, opts ...grpc.CallOption) (*CommonResponse, error)
-	VerifyCompany(ctx context.Context, in *VerifyCompanyReq, opts ...grpc.CallOption) (*CommonResponse, error)
 }
 
 type jobClient struct {
@@ -82,9 +80,27 @@ func (c *jobClient) FindJobById(ctx context.Context, in *FindJobByIdRequest, opt
 	return out, nil
 }
 
+func (c *jobClient) FindJobsByIndustry(ctx context.Context, in *FindJobsByIndustryReq, opts ...grpc.CallOption) (*FindJobResponse, error) {
+	out := new(FindJobResponse)
+	err := c.cc.Invoke(ctx, Job_FindJobsByIndustry_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *jobClient) FindJobs(ctx context.Context, in *FindJobRequest, opts ...grpc.CallOption) (*FindJobResponse, error) {
 	out := new(FindJobResponse)
 	err := c.cc.Invoke(ctx, Job_FindJobs_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *jobClient) FindJobsByType(ctx context.Context, in *FindJobsByTypeReq, opts ...grpc.CallOption) (*FindSimplifyJobResponse, error) {
+	out := new(FindSimplifyJobResponse)
+	err := c.cc.Invoke(ctx, Job_FindJobsByType_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -100,45 +116,18 @@ func (c *jobClient) SaveJobs(ctx context.Context, in *JobMessage, opts ...grpc.C
 	return out, nil
 }
 
+func (c *jobClient) FindJobsSimplify(ctx context.Context, in *FindAllJobRequest, opts ...grpc.CallOption) (*FindSimplifyJobResponse, error) {
+	out := new(FindSimplifyJobResponse)
+	err := c.cc.Invoke(ctx, Job_FindJobsSimplify_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *jobClient) UpdateJobs(ctx context.Context, in *JobMessage, opts ...grpc.CallOption) (*SaveJobResponse, error) {
 	out := new(SaveJobResponse)
 	err := c.cc.Invoke(ctx, Job_UpdateJobs_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *jobClient) RegisteredCompany(ctx context.Context, in *RegisteredCompanyReq, opts ...grpc.CallOption) (*CommonResponse, error) {
-	out := new(CommonResponse)
-	err := c.cc.Invoke(ctx, Job_RegisteredCompany_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *jobClient) UpdateCompany(ctx context.Context, in *RegisteredCompanyReq, opts ...grpc.CallOption) (*CommonResponse, error) {
-	out := new(CommonResponse)
-	err := c.cc.Invoke(ctx, Job_UpdateCompany_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *jobClient) BoundCompany(ctx context.Context, in *BoundCompanyReq, opts ...grpc.CallOption) (*CommonResponse, error) {
-	out := new(CommonResponse)
-	err := c.cc.Invoke(ctx, Job_BoundCompany_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *jobClient) VerifyCompany(ctx context.Context, in *VerifyCompanyReq, opts ...grpc.CallOption) (*CommonResponse, error) {
-	out := new(CommonResponse)
-	err := c.cc.Invoke(ctx, Job_VerifyCompany_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -152,13 +141,12 @@ type JobServer interface {
 	FindAllJobs(context.Context, *FindAllJobRequest) (*FindJobResponse, error)
 	FindJobByName(context.Context, *FindJobByNameRequest) (*FindJobResponse, error)
 	FindJobById(context.Context, *FindJobByIdRequest) (*FindJobResponse, error)
+	FindJobsByIndustry(context.Context, *FindJobsByIndustryReq) (*FindJobResponse, error)
 	FindJobs(context.Context, *FindJobRequest) (*FindJobResponse, error)
+	FindJobsByType(context.Context, *FindJobsByTypeReq) (*FindSimplifyJobResponse, error)
 	SaveJobs(context.Context, *JobMessage) (*SaveJobResponse, error)
+	FindJobsSimplify(context.Context, *FindAllJobRequest) (*FindSimplifyJobResponse, error)
 	UpdateJobs(context.Context, *JobMessage) (*SaveJobResponse, error)
-	RegisteredCompany(context.Context, *RegisteredCompanyReq) (*CommonResponse, error)
-	UpdateCompany(context.Context, *RegisteredCompanyReq) (*CommonResponse, error)
-	BoundCompany(context.Context, *BoundCompanyReq) (*CommonResponse, error)
-	VerifyCompany(context.Context, *VerifyCompanyReq) (*CommonResponse, error)
 	mustEmbedUnimplementedJobServer()
 }
 
@@ -175,26 +163,23 @@ func (UnimplementedJobServer) FindJobByName(context.Context, *FindJobByNameReque
 func (UnimplementedJobServer) FindJobById(context.Context, *FindJobByIdRequest) (*FindJobResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindJobById not implemented")
 }
+func (UnimplementedJobServer) FindJobsByIndustry(context.Context, *FindJobsByIndustryReq) (*FindJobResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindJobsByIndustry not implemented")
+}
 func (UnimplementedJobServer) FindJobs(context.Context, *FindJobRequest) (*FindJobResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindJobs not implemented")
+}
+func (UnimplementedJobServer) FindJobsByType(context.Context, *FindJobsByTypeReq) (*FindSimplifyJobResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindJobsByType not implemented")
 }
 func (UnimplementedJobServer) SaveJobs(context.Context, *JobMessage) (*SaveJobResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SaveJobs not implemented")
 }
+func (UnimplementedJobServer) FindJobsSimplify(context.Context, *FindAllJobRequest) (*FindSimplifyJobResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindJobsSimplify not implemented")
+}
 func (UnimplementedJobServer) UpdateJobs(context.Context, *JobMessage) (*SaveJobResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateJobs not implemented")
-}
-func (UnimplementedJobServer) RegisteredCompany(context.Context, *RegisteredCompanyReq) (*CommonResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RegisteredCompany not implemented")
-}
-func (UnimplementedJobServer) UpdateCompany(context.Context, *RegisteredCompanyReq) (*CommonResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateCompany not implemented")
-}
-func (UnimplementedJobServer) BoundCompany(context.Context, *BoundCompanyReq) (*CommonResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method BoundCompany not implemented")
-}
-func (UnimplementedJobServer) VerifyCompany(context.Context, *VerifyCompanyReq) (*CommonResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method VerifyCompany not implemented")
 }
 func (UnimplementedJobServer) mustEmbedUnimplementedJobServer() {}
 
@@ -263,6 +248,24 @@ func _Job_FindJobById_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Job_FindJobsByIndustry_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FindJobsByIndustryReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(JobServer).FindJobsByIndustry(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Job_FindJobsByIndustry_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(JobServer).FindJobsByIndustry(ctx, req.(*FindJobsByIndustryReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Job_FindJobs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(FindJobRequest)
 	if err := dec(in); err != nil {
@@ -277,6 +280,24 @@ func _Job_FindJobs_Handler(srv interface{}, ctx context.Context, dec func(interf
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(JobServer).FindJobs(ctx, req.(*FindJobRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Job_FindJobsByType_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FindJobsByTypeReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(JobServer).FindJobsByType(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Job_FindJobsByType_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(JobServer).FindJobsByType(ctx, req.(*FindJobsByTypeReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -299,6 +320,24 @@ func _Job_SaveJobs_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Job_FindJobsSimplify_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FindAllJobRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(JobServer).FindJobsSimplify(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Job_FindJobsSimplify_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(JobServer).FindJobsSimplify(ctx, req.(*FindAllJobRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Job_UpdateJobs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(JobMessage)
 	if err := dec(in); err != nil {
@@ -317,78 +356,6 @@ func _Job_UpdateJobs_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Job_RegisteredCompany_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RegisteredCompanyReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(JobServer).RegisteredCompany(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Job_RegisteredCompany_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(JobServer).RegisteredCompany(ctx, req.(*RegisteredCompanyReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Job_UpdateCompany_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RegisteredCompanyReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(JobServer).UpdateCompany(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Job_UpdateCompany_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(JobServer).UpdateCompany(ctx, req.(*RegisteredCompanyReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Job_BoundCompany_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(BoundCompanyReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(JobServer).BoundCompany(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Job_BoundCompany_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(JobServer).BoundCompany(ctx, req.(*BoundCompanyReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Job_VerifyCompany_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(VerifyCompanyReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(JobServer).VerifyCompany(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Job_VerifyCompany_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(JobServer).VerifyCompany(ctx, req.(*VerifyCompanyReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // Job_ServiceDesc is the grpc.ServiceDesc for Job service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -397,46 +364,42 @@ var Job_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*JobServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "FindAllJobs",
+			MethodName: "findAllJobs",
 			Handler:    _Job_FindAllJobs_Handler,
 		},
 		{
-			MethodName: "FindJobByName",
+			MethodName: "findJobByName",
 			Handler:    _Job_FindJobByName_Handler,
 		},
 		{
-			MethodName: "FindJobById",
+			MethodName: "findJobById",
 			Handler:    _Job_FindJobById_Handler,
 		},
 		{
-			MethodName: "FindJobs",
+			MethodName: "findJobsByIndustry",
+			Handler:    _Job_FindJobsByIndustry_Handler,
+		},
+		{
+			MethodName: "findJobs",
 			Handler:    _Job_FindJobs_Handler,
 		},
 		{
-			MethodName: "SaveJobs",
+			MethodName: "findJobsByType",
+			Handler:    _Job_FindJobsByType_Handler,
+		},
+		{
+			MethodName: "saveJobs",
 			Handler:    _Job_SaveJobs_Handler,
 		},
 		{
-			MethodName: "UpdateJobs",
+			MethodName: "findJobsSimplify",
+			Handler:    _Job_FindJobsSimplify_Handler,
+		},
+		{
+			MethodName: "updateJobs",
 			Handler:    _Job_UpdateJobs_Handler,
-		},
-		{
-			MethodName: "RegisteredCompany",
-			Handler:    _Job_RegisteredCompany_Handler,
-		},
-		{
-			MethodName: "UpdateCompany",
-			Handler:    _Job_UpdateCompany_Handler,
-		},
-		{
-			MethodName: "BoundCompany",
-			Handler:    _Job_BoundCompany_Handler,
-		},
-		{
-			MethodName: "VerifyCompany",
-			Handler:    _Job_VerifyCompany_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "job/Job.proto",
+	Metadata: "job/job.proto",
 }
